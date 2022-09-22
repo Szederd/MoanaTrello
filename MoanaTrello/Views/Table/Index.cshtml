@@ -1,0 +1,70 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+    ViewData["Title"] = "Táblák";
+}
+
+
+<div class="row">
+
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-header"><p>Függőben</p></div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">An active item</li>
+                    <li class="list-group-item">A second item</li>
+                    <li class="list-group-item">A third item</li>
+                    <li class="list-group-item">A fourth item</li>
+                    <li class="list-group-item" id="addNewCard">
+                        <button class="btn btn-sm btn-block btn-primary" onclick="AddNewCard()"><i class="fa-solid fa-plus"></i></button>
+
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-header"><p>Folyamat alatt</p></div>
+            <div class="card-body">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-header"><p>Felfüggesztett</p></div>
+            <div class="card-body">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-header"><p>Kész</p></div>
+            <div class="card-body">
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts{
+    <script>
+
+        function AddNewCard(){
+            $.ajax({
+                url: "/table/AddNewCard",
+                success: function (result) {
+                    $('#addNewCard').html(result);
+                }
+            });
+        }
+    </script>
+}
