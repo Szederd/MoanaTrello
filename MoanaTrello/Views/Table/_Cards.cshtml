@@ -1,0 +1,18 @@
+﻿@model IEnumerable<MoanaTrello.Models.Helpers.Card>
+
+
+@foreach(var item in Model) { 
+    <div class="card  mb-3">
+        <div class="card-header">
+            @item.Title
+            <button type="button" class="close" onclick="deleteCard('@item.Id')" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="card-body">
+            @item.Description
+            <br />
+            <button type="button" class="btn btn-dark btn-sm" onclick="readMore('@item.Id')">Bővebben</button>
+        </div>
+    </div>
+}

@@ -1,0 +1,20 @@
+﻿@model MoanaTrello.Models.Helpers.Card
+
+    
+                <div class="modal-header">
+                    <h5 class="modal-title">@Model.Title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Leírás:<br />@Model.Description</p>
+                    <p>Létrehozva:<br />@Model.CreatedAt</p>
+                    <p>Módosítva:<br />@Model.ModifiedAt</p>
+                    <p>Létrehozta:<br />@Model.OwnerId</p>
+                    <p>Hozzárendelve:<br />@Model.AsigneeId</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="edit('@Model.Id')">Szerkesztés</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Bezár</button>
+                </div>

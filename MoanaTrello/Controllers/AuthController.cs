@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MoanaTrello.Models.Helpers;
 using MoanaTrello.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MoanaTrello.Controllers
@@ -21,14 +24,32 @@ namespace MoanaTrello.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginRequest loginRequest)
+        public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(loginRequest);
-            }
+                var token = await _loginService.Login(loginRequest);
 
-            return View();
+                if (!String.IsNullOrEmpty(token.Token))
+                {
+                    Response.Cookies.Append("accessToken", token.Token);
+          //          var claims = new List<Claim>
+          //{
+          //  new Claim(ClaimTypes.NameIdentifier, token.UserId),
+          //  new Claim("accessToken", token.Token)
+          //};
+
+          //          var userIdentity = new ClaimsIdentity(claims, "login");
+
+          //          ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
+          //          await HttpContext.SignInAsync(principal);
+
+                    return RedirectToAction("Index", "Table");
+                }
+                
+
+            }
+                    return View(loginRequest);
         }
 
         public ActionResult Register()
@@ -48,9 +69,15 @@ namespace MoanaTrello.Controllers
             return RedirectToAction("Login");
         }
 
-        public ActionResult Logout()
+        [Authorize]
+        public async Task<ActionResult> Logout()
         {
-            return View();
+            await HttpContext.SignOutAsync();
+
+            return new SignOutResult("Auth0", new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("Index", "Home")
+            });
         }
     }
 }

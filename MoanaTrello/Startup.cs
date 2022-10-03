@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MoanaTrello.Services;
 using System;
 using System.Collections.Generic;
@@ -28,9 +30,33 @@ namespace MoanaTrello
         {
             services.AddControllersWithViews();
 
-            services.AddSingleton<ILoginService, LoginService>();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
 
-            
+            })
+           .AddCookie(options => {
+               options.LoginPath = "/Auth/Login/";
+           })
+           .AddOpenIdConnect(options =>
+           {
+               options.ClientId = "";
+               options.ClientSecret = "";
+               options.Authority = "https://.onelogin.com/oidc";
+               options.ResponseType = "code";
+               options.GetClaimsFromUserInfoEndpoint = true;
+           }
+            );
+
+            services.AddHttpClient();
+
+            services.AddSingleton<ILoginService, LoginService>();
+            services.AddSingleton<ICardService, CardService>();
+
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +75,6 @@ namespace MoanaTrello
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthorization();
@@ -60,6 +85,10 @@ namespace MoanaTrello
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            
         }
+
+       
     }
 }

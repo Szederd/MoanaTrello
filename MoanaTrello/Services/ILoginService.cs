@@ -8,6 +8,6 @@ namespace MoanaTrello.Services
 {
     public interface ILoginService
     {
-        bool Login(LoginRequest loginRequest);
+        Task<LoginResponse> Login(LoginRequest loginRequest);
     }
 }
