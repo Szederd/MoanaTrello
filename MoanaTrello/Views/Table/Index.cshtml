@@ -133,29 +133,6 @@
             });
         }
 
-        function update() {
-            var card = new Object();
-            card.Id = $('input[name="Id"]').val();
-            card.Title = $('input[name="Title"]').val();
-            card.Description = $('input[name="Description"]').val();
-            card.Status = $('input[name="Status"]').val();
-            card.Position = $('input[name="Position"]').val();
-            card.CreatedAt = $('input[name="CreatedAt"]').val();
-            card.ModifiedAt = $('input[name="ModifiedAt"]').val();
-            card.OwnerId = $('input[name="OwnerId"]').val();
-            card.AsigneeId = $('input[name="AsigneeId"]').val();
-            $.ajax({
-                type: "PUT",
-                url: "/table/EditCard",
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(card),
-                success: function (result) {
-                    refreshCards();
-                    $('#details').modal("hide");
-                }
-            });
-        }
-
         $(document).ready(function () {
             refreshCards();
         });
@@ -191,10 +168,44 @@
     <script type="text/javascript" src="~/lib/dragula/dragula.min.js"></script>
 
     <script>
-        var drake = dragula({
-            isContainer: function (el) {
-                return el.classList.contains('dragula-container');
-            }
+        dragula([
+            document.getElementById('pending'),
+            document.getElementById('inProgress'),
+            document.getElementById('blocked'),
+            document.getElementById('done')
+        ])
+            .on('drop', function (el, container) {
+               
+                
+            el.className += ' ex-moved';
+        })
+            .on('out', function (el, container) {
+                container.className = container.className.replace('ex-over', '');
+                var data = new Object();
+                data.id = el.id;
+
+                switch (container.id) {
+                    case 'pending':
+                        data.status = 0;
+                        break;
+                    case 'inProgress':
+                        data.status = 0;
+                        break;
+                    case 'blocked':
+                        data.status = 0;
+                        break;
+                    case 'done':
+                        data.status = 0;
+                        break;
+                }
+                data.order = 0;
+                fetch('/table/ReorderCards', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                })
         });
     </script>
 }

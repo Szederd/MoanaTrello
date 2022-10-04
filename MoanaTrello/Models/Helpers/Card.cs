@@ -23,4 +23,11 @@ namespace MoanaTrello.Models.Helpers
         public string Title { get; set; }
         public string Description { get; set; }
     }
+
+    public class ReorderCardRequest
+    {
+        public string Id { get; set; }
+        public int Status { get; set; }
+        public int Order { get; set; }
+    }
 }

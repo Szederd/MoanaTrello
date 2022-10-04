@@ -1,25 +1,54 @@
 ﻿@model MoanaTrello.Models.Helpers.Card
 @using MoanaTrello.Models.Helpers
 
-@{ 
+@{
     IEnumerable<User> users = (List<User>)ViewData["users"];
 }
 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 <div class="modal-header">
-    @Html.HiddenFor(m=> m.Id)
+    @Html.HiddenFor(m => m.Id)
     @Html.EditorFor(m => m.Title, new { htmlAttributes = new { @class = "form-control" } })
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<div class="modal-body">
-    <p>Leírás:<br />@Html.EditorFor(m => m.Description, new { htmlAttributes = new { @class = "form-control" } })</p>
-    <p>Létrehozva:<br />@Model.CreatedAt</p>
-    <p>Módosítva:<br />@Model.ModifiedAt</p>
-    <p>Létrehozta:<br />@Model.OwnerId</p>
-    <p>Hozzárendelve:<br />@Html.DropDownListFor(m => m.AsigneeId, new SelectList(users, "Id", "Email"), new { htmlAttributes = new { @class = "form-control" } })</p>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-primary" onclick="update('@Model.Id')">Mentés</button>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Mégse</button>
-</div>
+    <div class="modal-body">
+        <p>Leírás:<br />@Html.EditorFor(m => m.Description, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })</p>
+        <p>Létrehozva:<br />@Html.EditorFor(m => m.CreatedAt, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })</p>
+        <p>Módosítva:<br />@Html.EditorFor(m => m.ModifiedAt, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })</p>
+        <p>Létrehozta:<br />@Html.EditorFor(m => m.OwnerId, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })</p>
+        <p>Hozzárendelve:<br />@Html.DropDownListFor(m => m.AsigneeId, new SelectList(users, "Id", "Email"), new { htmlAttributes = new { @class = "form-control" } })</p>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Mentés</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Mégse</button>
+    </div>
+}
+
+<script>
+    $('form').submit(function (e) {
+        var form = new FormData(e.currentTarget);
+        let formDataObject = Object.fromEntries(form.entries());
+        // Format the plain form data as JSON
+        let formDataJsonString = JSON.stringify(formDataObject);
+
+        e.preventDefault();
+
+        fetch('/table/EditCard/', {
+            method: 'PUT',
+            body: formDataJsonString,
+            headers: {
+                'Content-Type': 'application/json'
+                //'Content-Type': 'application/x-www-form-urlencoded',
+            }            
+        }).then(data => {
+            if (data.ok) {
+                $('#details').modal("hide");
+                refreshCards();
+            }
+        })
+    })
+</script>

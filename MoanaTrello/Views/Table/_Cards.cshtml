@@ -2,7 +2,7 @@
 
 
 @foreach(var item in Model) { 
-    <div class="card  mb-3">
+    <div class="card  mb-3" id="@item.Id" >
         <div class="card-header">
             @item.Title
             <button type="button" class="close" onclick="deleteCard('@item.Id')" aria-label="Close">

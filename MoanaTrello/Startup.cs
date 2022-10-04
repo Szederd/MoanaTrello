@@ -30,29 +30,20 @@ namespace MoanaTrello
         {
             services.AddControllersWithViews();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-
-            })
-           .AddCookie(options => {
-               options.LoginPath = "/Auth/Login/";
-           })
-           .AddOpenIdConnect(options =>
-           {
-               options.ClientId = "";
-               options.ClientSecret = "";
-               options.Authority = "https://.onelogin.com/oidc";
-               options.ResponseType = "code";
-               options.GetClaimsFromUserInfoEndpoint = true;
-           }
-            );
 
             services.AddHttpClient();
 
             services.AddSingleton<ILoginService, LoginService>();
             services.AddSingleton<ICardService, CardService>();
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(3600);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
 
 
@@ -78,6 +69,7 @@ namespace MoanaTrello
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

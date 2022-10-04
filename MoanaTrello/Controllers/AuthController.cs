@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoanaTrello.Models.Helpers;
 using MoanaTrello.Services;
@@ -32,17 +33,7 @@ namespace MoanaTrello.Controllers
 
                 if (!String.IsNullOrEmpty(token.Token))
                 {
-                    Response.Cookies.Append("accessToken", token.Token);
-          //          var claims = new List<Claim>
-          //{
-          //  new Claim(ClaimTypes.NameIdentifier, token.UserId),
-          //  new Claim("accessToken", token.Token)
-          //};
-
-          //          var userIdentity = new ClaimsIdentity(claims, "login");
-
-          //          ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
-          //          await HttpContext.SignInAsync(principal);
+                    HttpContext.Session.SetString("token", token.Token);
 
                     return RedirectToAction("Index", "Table");
                 }
