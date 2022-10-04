@@ -9,5 +9,6 @@ namespace MoanaTrello.Services
     public interface ILoginService
     {
         Task<LoginResponse> Login(LoginRequest loginRequest);
+        Task<bool> Register(RegisterRequest registerRequest);
     }
 }

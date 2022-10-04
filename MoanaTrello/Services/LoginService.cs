@@ -34,5 +34,25 @@ namespace MoanaTrello.Services
             }
 
         }
+
+        public async Task<bool> Register(RegisterRequest registerRequest)
+        {
+            using (var client = new HttpClient())
+            {
+                var loginEndpoint = "http://193.201.187.29:84/Authentication/SignUp";
+
+                var request = new HttpRequestMessage(HttpMethod.Post, loginEndpoint);
+                request.Content = new StringContent(JsonConvert.SerializeObject(registerRequest), Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(loginEndpoint, new StringContent(JsonConvert.SerializeObject(registerRequest), Encoding.UTF8, "application/json"));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+        }
     }
 }

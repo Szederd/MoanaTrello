@@ -35,12 +35,8 @@ namespace MoanaTrello.Models.Helpers
         [Required(ErrorMessage = "Email cím megadása kötelező!")]
         [EmailAddress(ErrorMessage = "Hibás email cím!")]
         public string Email { get; set; }
-        [Required(ErrorMessage = "Megerősítő email cím megadása kötelező!")]
-        public string EmailConf { get; set; }
         [Required(ErrorMessage = "Jelszó megadása kötelező!")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        [DataType(DataType.Password)]
-        public string PasswordConf { get; set; }
     }
 }

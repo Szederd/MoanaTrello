@@ -10,7 +10,7 @@
 
 
 <div class="container w-50">
-    <h1>Bejelentkezés</h1>
+    <h1>Regisztráció</h1>
 
     @using (Html.BeginForm("Register", "Auth", FormMethod.Post))
     {
@@ -23,22 +23,10 @@
                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
             </div>
 
-            <label class="control-label">Email megerősítése</label>
-            <div class="col-md-12">
-                @Html.EditorFor(m => m.EmailConf, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EmailConf, "", new { @class = "text-danger" })
-            </div>
-
             <label class="control-label">Jelszó</label>
             <div class="col-md-12">
                 @Html.EditorFor(m => m.Password, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-
-            <label class="control-label">Jelszó megerősítése</label>
-            <div class="col-md-12">
-                @Html.EditorFor(m => m.PasswordConf, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PasswordConf, "", new { @class = "text-danger" })
             </div>
 
 

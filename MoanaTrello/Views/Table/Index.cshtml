@@ -141,6 +141,7 @@
             $.ajax({
                 url: "/table/GetCardByStatus?status=0",
                 success: function (result) {
+                    console.log(result);
                     $('#pending').html(result);
                 }
             });
@@ -175,13 +176,16 @@
             document.getElementById('done')
         ])
             .on('drop', function (el, container) {
-               
-                
-            el.className += ' ex-moved';
-        })
-            .on('out', function (el, container) {
                 container.className = container.className.replace('ex-over', '');
+
                 var data = new Object();
+
+                if (container.childElementCount <= 1) {
+                    data.position = 0;
+                } else {
+                    data.position = [].slice.call(el.parentElement.children).indexOf(el);
+                }
+
                 data.id = el.id;
 
                 switch (container.id) {
@@ -189,23 +193,25 @@
                         data.status = 0;
                         break;
                     case 'inProgress':
-                        data.status = 0;
+                        data.status = 1;
                         break;
                     case 'blocked':
-                        data.status = 0;
+                        data.status = 2;
                         break;
                     case 'done':
-                        data.status = 0;
+                        data.status = 3;
                         break;
                 }
                 data.order = 0;
-                fetch('/table/ReorderCards', {
+                fetch('/table/ChangeCardStatus', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(data),
-                })
+                });
+                
+            el.className += ' ex-moved';
         });
     </script>
 }

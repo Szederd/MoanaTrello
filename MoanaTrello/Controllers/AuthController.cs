@@ -50,9 +50,14 @@ namespace MoanaTrello.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(RegisterRequest registerRequest)
+        public async Task<ActionResult> Register(RegisterRequest registerRequest)
         {
             if (!ModelState.IsValid)
+            {
+                return View(registerRequest);
+            }
+
+            if (!await _loginService.Register(registerRequest))
             {
                 return View(registerRequest);
             }

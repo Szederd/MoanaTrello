@@ -34,20 +34,22 @@ namespace MoanaTrello.Services
 
         public async Task<IEnumerable<Card>> GetCardsByStatus(int status, string token)
         {
-            using (var client = new HttpClient())
-            {
-                var uri = "http://193.201.187.29:84/Cards/GetAll";
+            //using (var client = new HttpClient())
+            //{
+            //    var uri = "http://193.201.187.29:84/Cards/GetAll";
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                var res = await client.GetAsync(uri);
+            //    var res = await client.GetAsync(uri);
 
-                var json = await res.Content.ReadAsStringAsync();
+            //    var json = await res.Content.ReadAsStringAsync();
 
-                var response = JsonConvert.DeserializeObject<List<Card>>(json);
+            //    var response = JsonConvert.DeserializeObject<List<Card>>(json);
 
-                return response.Where(x => x.Status == status).OrderBy(x => x.Status);
-            }
+            //    return response.Where(x => x.Status == status).OrderBy(x => x.Status);
+            //}
+
+            return (await GetCards(token)).Where(x => x.Status == status).OrderBy(x => x.Status);
         }
 
         public async Task<bool> CreateCard(string token, CardRequest card)
@@ -135,6 +137,10 @@ namespace MoanaTrello.Services
             {
                 var uri = "http://193.201.187.29:84/Cards/Update";
 
+                var originalCard = await GetCardById(token, card.Id);
+                card.Position = originalCard.Position;
+                card.Status = originalCard.Status;
+
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 var res = await client.PutAsync(uri, new StringContent(JsonConvert.SerializeObject(card), Encoding.UTF8, "application/json"));
@@ -145,6 +151,38 @@ namespace MoanaTrello.Services
                 }
 
                 return false;
+            }
+        }
+
+        public async Task<bool> ChangeCardStatusAndPosition(string token, CardChangeRequest card)
+        {
+            using (var client = new HttpClient())
+            {
+                var originalCard = await GetCardById(token, card.Id);
+
+                originalCard.Status = card.Status;
+                originalCard.Position = card.Position;
+                var asd = (await GetCardById(token, ""));
+                List<Card> cards = (await GetCardsByStatus(card.Status, token)).ToList();
+                cards.RemoveAll(x => x.Id == originalCard.Id);
+                List<Card> newCardList = new List<Card>(); 
+                foreach (var item in cards)
+                {
+                    newCardList.Add(await GetCardById(token, item.Id));
+                }
+
+                newCardList.Insert(card.Position, originalCard);
+
+                var uri = "http://193.201.187.29:84/Cards/Update";
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                for (int i = 0; i < newCardList.Count; i++)
+                {
+                    
+                    var res = await client.PutAsync(uri, new StringContent(JsonConvert.SerializeObject(newCardList[i]), Encoding.UTF8, "application/json"));
+                }
+                    return true;
             }
         }
     }

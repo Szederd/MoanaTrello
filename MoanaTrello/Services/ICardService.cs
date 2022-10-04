@@ -15,5 +15,6 @@ namespace MoanaTrello.Services
         Task<Card> GetCardById(string token, string id);
         Task<List<User>> GetUsers(string token);
         Task<bool> EditCard(string token, Card card);
+        Task<bool> ChangeCardStatusAndPosition(string token, CardChangeRequest card);
     }
 }
