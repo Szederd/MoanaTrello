@@ -176,8 +176,6 @@
             document.getElementById('done')
         ])
             .on('drop', function (el, container) {
-                container.className = container.className.replace('ex-over', '');
-
                 var data = new Object();
 
                 if (container.childElementCount <= 1) {
@@ -210,8 +208,9 @@
                     },
                     body: JSON.stringify(data),
                 });
+
                 
-            el.className += ' ex-moved';
+                
         });
     </script>
 }

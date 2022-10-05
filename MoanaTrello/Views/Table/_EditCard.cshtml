@@ -32,7 +32,6 @@
     $('form').submit(function (e) {
         var form = new FormData(e.currentTarget);
         let formDataObject = Object.fromEntries(form.entries());
-        // Format the plain form data as JSON
         let formDataJsonString = JSON.stringify(formDataObject);
 
         e.preventDefault();
@@ -42,7 +41,6 @@
             body: formDataJsonString,
             headers: {
                 'Content-Type': 'application/json'
-                //'Content-Type': 'application/x-www-form-urlencoded',
             }            
         }).then(data => {
             if (data.ok) {

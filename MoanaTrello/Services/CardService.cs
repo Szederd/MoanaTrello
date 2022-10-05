@@ -34,22 +34,7 @@ namespace MoanaTrello.Services
 
         public async Task<IEnumerable<Card>> GetCardsByStatus(int status, string token)
         {
-            //using (var client = new HttpClient())
-            //{
-            //    var uri = "http://193.201.187.29:84/Cards/GetAll";
-
-            //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            //    var res = await client.GetAsync(uri);
-
-            //    var json = await res.Content.ReadAsStringAsync();
-
-            //    var response = JsonConvert.DeserializeObject<List<Card>>(json);
-
-            //    return response.Where(x => x.Status == status).OrderBy(x => x.Status);
-            //}
-
-            return (await GetCards(token)).Where(x => x.Status == status).OrderBy(x => x.Status);
+            return (await GetCards(token)).Where(x => x.Status == status).OrderBy(x => x.Position);
         }
 
         public async Task<bool> CreateCard(string token, CardRequest card)
@@ -162,7 +147,7 @@ namespace MoanaTrello.Services
 
                 originalCard.Status = card.Status;
                 originalCard.Position = card.Position;
-                var asd = (await GetCardById(token, ""));
+               
                 List<Card> cards = (await GetCardsByStatus(card.Status, token)).ToList();
                 cards.RemoveAll(x => x.Id == originalCard.Id);
                 List<Card> newCardList = new List<Card>(); 
@@ -179,7 +164,7 @@ namespace MoanaTrello.Services
 
                 for (int i = 0; i < newCardList.Count; i++)
                 {
-                    
+                    newCardList[i].Position = i;
                     var res = await client.PutAsync(uri, new StringContent(JsonConvert.SerializeObject(newCardList[i]), Encoding.UTF8, "application/json"));
                 }
                     return true;

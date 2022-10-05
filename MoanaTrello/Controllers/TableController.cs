@@ -94,17 +94,6 @@ namespace MoanaTrello.Controllers
 
         [HttpPut]
         [SessionFilter]
-        public async Task<IActionResult> ReorderCards([FromBody] List<CardChangeRequest> CardRequest)
-        {
-            //if (await _cardService.EditCard(HttpContext.Session.GetString("token"), CardRequest))
-            //{
-            //    return Json(new { success = true });
-            //}
-            return Json(new { success = false });
-        }
-
-        [HttpPut]
-        [SessionFilter]
         public async Task<IActionResult> ChangeCardStatus([FromBody] CardChangeRequest CardRequest)
         {
             if (await _cardService.ChangeCardStatusAndPosition(HttpContext.Session.GetString("token"), CardRequest))
